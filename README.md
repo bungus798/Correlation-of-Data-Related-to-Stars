@@ -34,11 +34,15 @@ Then, we proceed into the visualization of the two variables’ data. First of a
 
 However, when performing the hypothesis test for simple linear regression, we realized that the number of observations for each of the two variables must be the same. As shown in the data of R’s environment, teff (effective temperature) has 99705 observations, and wavelength has 7514 observations. Therefore, in order to make the hypothesis test runnable, we will produce a random sample of 7514 observations for teff, and perform this test with the original wavelength. As the sample of teff is completely random, it can be representative of the entire dataset, and we will also consider this validity using values of residuals. Note that there is major change here from what we designed in the progress report, as we previously designed to perform multiple hypothesis tests containing the entire number of observations of teff, which is time-consuming. This method is also inaccurate, since the last test only contains 2023 observations for teff, and it is very hard to determine which 2023 of the 7514 observations of wavelength is best to use for this last test. Therefore, we decided to use this approach which only contains one test, since 7514 observations of teff that are selected purely random is representative of the entire 99705 observations of teff, and is also much more convenient for others to reproduce.
 
-### Picture Placeholder
+<p align="center">
+<img src="https://github.com/bungus798/Correlation-of-Data-Related-to-Stars/blob/main/main/visualizations/histo3.png" width="500" height="300"> <img src="https://github.com/bungus798/Correlation-of-Data-Related-to-Stars/blob/main/main/visualizations/histo4.png" width="500" height="300">
+</p>
 
 Again, just before we actually start the process of performing the hypothesis testing for simple linear regression for teff and wavelength, we want to first get an idea about what the relationship between wavelength and effective temperature of stars can be. Therefore, we will visualize a scatter plot between the two variables using the ggplot() and geom_point() functions. We will also get a line of best fit using the geom_smooth() function. We get the figure below, which appears that there is no correlation between wavelength and effective temperature. The figure also shows a blue line of best fit which is almost horizontal, with the effective temperature remaining at around 4600 K for all wavelength values, typically 0 to 16800 for the data we used.
 
-### Picture Placeholder
+<p align="center">
+ <img src="https://github.com/bungus798/Correlation-of-Data-Related-to-Stars/blob/main/main/visualizations/scatter2.png" width="500" height="300">
+</p>
 
 Now, we will perform the actual hypothesis testing for simple linear regression. First of all, we can get a sample of 7514 observations of the effective temperature (teff) using the sample_n() function, and then use the lm() summary() function to get the statistical data for the linear regression test. The specific statistical data are shown in the below:
 
@@ -57,7 +61,9 @@ The third step we have done was to start the simulation. We use set.seed() and p
 
 The fourth step we have done was to create a visualization and see the distribution of the simulated mean values. But here we changed the “sim_mean_logg” from a vector to a tibble. Otherwise the plot will fail to be created since it is a numeric vector rather than a <data.frame>. So we used the tibble() function and successfully got a data form of the “sim_mean_logg” called “sim_mean_logg_data”. After that we can use “ggplot(data=sim_mean_logg_data, aes(x=sim_mean_logg)) + geom_histogram()” to get a visualization.
 
-### Picture Placeholder
+<p align="center"> 
+ <img src="https://github.com/bungus798/Correlation-of-Data-Related-to-Stars/blob/main/main/visualizations/histo2.png" width="500" height="300"> <img src="https://github.com/bungus798/Correlation-of-Data-Related-to-Stars/blob/main/main/visualizations/boxplot1.png" width="500" height="300"> 
+</p>
 
 From the visualization, we discovered that the histogram(below) has a symmetric unimodal distribution range from 2.286 to 2.296.
 The last step we have done was to calculate the (X% confidence intervals). Here we need to use quantile() function and a formula
@@ -71,7 +77,42 @@ We got the confidence interval by:
 And we did four confidence intervals in total.
 Currently we have X% (99%, 95%, 90%, 85%) CIs that can estimate the true population mean of the base-10 logarithm of red giants’ surface gravity.
 
-### Picture Placeholder
+```
+logg <- "STA130_APOGEE.h5" %>% h5read("logg") %>% as_tibble()
+logg %>% glimpse()
+
+samp_size <- 99705
+n_trial <- 1000
+
+set.seed(911)
+sim_mean_logg <- rep(NA,n_trial)
+for (i in 1:n_trial){
+  bootstrap_sample <- logg %>% slice_sample(n=samp_size,replace = TRUE)
+  sim_mean = bootstrap_sample %>% summarise(mean(value)) %>% as.numeric()
+  sim_mean_logg[i] = sim_mean
+}
+sim_mean_logg_data<- tibble(sim_mean_logg)
+#sim_mean_logg_data %>% glimpse()
+
+sim_mean_logg_data %>% ggplot(aes(x=sim_mean_logg)) + 
+  geom_histogram(color = "black",fill ="grey",bins = 25) +
+  labs(title="The Distribution of Simulated Mean Values of logg",
+       x="Mean Value(cenetimetres-grams-seconds)")
+
+X1=c((1-0.99)/2,(1+0.99)/2)
+X2=c((1-0.95)/2,(1+0.95)/2)
+X3=c((1-0.90)/2,(1+0.90)/2)
+X4=c((1-0.85)/2,(1+0.85)/2)
+
+quantile(sim_mean_logg,X1)
+quantile(sim_mean_logg,X2)
+quantile(sim_mean_logg,X3)
+quantile(sim_mean_logg,X4)
+```
+
+<p align="center"> 
+ <img src="https://github.com/bungus798/Correlation-of-Data-Related-to-Stars/blob/main/main/outputs/confidence1.jpeg" width="270" height="300">
+</p>
 
 ## Question 3: Methods, Results, and Visualizations
 “How does the range of the amount of iron correlate to the amount of other elements that can be found on the surface of the stars?” was our initial question that we came up with from the data given to us. After receiving feedback, we have realized that this question seems too broad and vague and we decided to change it up to “How does the range of the amount of iron, correlate to the amount of other elements that can be found on the surface of the stars”. This new question will allow us to gain deeper insight on the correlation between these elements and allow us to use more strategies to answer our question.
@@ -81,18 +122,41 @@ For us to understand the correlation of the elements, we first must know a littl
 
 In order to visualize this we must separate the iron data with the data of the other elements. We can use a variable “not_iron” to represent all the elements that aren’t iron by adding the other elements up. This way, instead of comparing each of the elements with iron, we now have a group representing all the elements which can be used to compare with iron.
 
-### Code Placeholder
+```
+oh <- "STA130_APOGEE.h5" %>% h5read("o_h") %>% as_tibble()
+ch <- "STA130_APOGEE.h5" %>% h5read("c_h") %>% as_tibble()
+mgh <- "STA130_APOGEE.h5" %>% h5read("mg_h") %>% as_tibble()
+alh <- "STA130_APOGEE.h5" %>% h5read("al_h") %>% as_tibble()
+nh <- "STA130_APOGEE.h5" %>% h5read("n_h") %>% as_tibble()
+cah <- "STA130_APOGEE.h5" %>% h5read("ca_h") %>% as_tibble()
+feh <- "STA130_APOGEE.h5" %>% h5read("fe_h") %>% as_tibble()
 
-After combining the other elements except iron, we come up with a tibble that we can summarize. These values represent the abundance of the element produced by the stars.One way that we can find correlation between these materials would be using the cor() function in R. This should give us a number between -1 to 1 revealing whether they are positively or negatively correlated. Furthermore when the absolute value of the output is closer to one, it represents the strength of correlations
+not_iron <- oh + ch +mgh + alh + nh + cah
 
-### Picture Placeholder
+elements <- bind_cols(not_iron, feh) %>% rename(not_iron = value...1, feh = value...2)
+glimpse(elements)
+
+iron_elements_regression <- lm(feh ~ not_iron, data = elements) %>% summary()
+iron_elements_regression
+
+iron_elements_correlation <- cor(elements$feh, elements$not_iron)
+iron_elements_correlation
+```
+
+After combining the other elements except iron, we come up with a tibble that we can summarize. These values represent the abundance of the element produced by the stars.One way that we can find correlation between these materials would be using the cor() function in R. This should give us a number between -1 to 1 revealing whether they are positively or negatively correlated. Furthermore when the absolute value of the output is closer to one, it represents the strength of correlations.
+
+```
+[1] 0.9814156
+```
 
 After running the cor() function with arguments of iron and non-iron elements, we find that the correlation number is around 0.98 which is close to 1. This means that the correlation between the iron and elements that are not iron are positively correlated. Since 0.98 is very close to 1, as it is 0.02 off from 1, this means that these two variables are strongly correlated.
   
 This means that once we plot out our line of best fit, the slope of the line will be positive and as the x value becomes higher, the y value should as well.
 Another method would be plotting these materials on scatter plots and then comparing. With scatter plots instead of histograms, we can draw a line of best fit which can tell us the growth or decrease in the other materials compared to iron. Furthermore, we can use our existing histogram of the levels of iron in the stars to give us a better understanding when analyzing the scatterplot.
 
-### Picture Placeholder
+<p align="center"> 
+ <img src="https://github.com/bungus798/Correlation-of-Data-Related-to-Stars/blob/main/main/visualizations/Scatter1.png" width="500" height="300"> <img src="https://github.com/bungus798/Correlation-of-Data-Related-to-Stars/blob/main/main/visualizations/Histo1.png" width="500" height="300"> 
+</p>
 
 The above visualization is the scatter plot representation of the iron and non-iron elements. From this plot, the x is the iron found on the stars while the y is the non-iron elements found on the stars. As we can see from the visualization, it starts off at the bottom with a large spread of iron and other elements. Then, as more iron is produced, the value of the non-iron elements becomes less spread. From this graph, this tells us that there are less of other elements being produced the more that iron is being produced. Not only are there less, the concentration of other elements compared to iron are also being increased. We can see that the points at the tip of this plot are highly condensed compared to the bottom which is spread out.
 
@@ -106,7 +170,28 @@ If we want numbers instead of visualizations, we can use the lm() method to comp
 Based on these results from the lm() function, we can see that our estimated linear regression equation gives us an intercept of -0.08 and a slope of 0.17. From our previous visualization of the scatter plot, the line of best fit is now represented by a slope of 0.17 which tells us the relationship between iron and the other elements. As the abundance of iron rises, the other elements rise as well; however, with a slope of 0.17, it means that iron is indeed found more on the stars and as the amount increases, the other elements slowly increase along with the iron.
 Represented below here are some of the codes and functions we have utilized to generate these visualizations for this question.
 
-### Picture Placeholder
+```
+oh <- "STA130_APOGEE.h5" %>% h5read("o_h") %>% as_tibble()
+ch <- "STA130_APOGEE.h5" %>% h5read("c_h") %>% as_tibble()
+mgh <- "STA130_APOGEE.h5" %>% h5read("mg_h") %>% as_tibble()
+alh <- "STA130_APOGEE.h5" %>% h5read("al_h") %>% as_tibble()
+nh <- "STA130_APOGEE.h5" %>% h5read("n_h") %>% as_tibble()
+cah <- "STA130_APOGEE.h5" %>% h5read("ca_h") %>% as_tibble()
+feh <- "STA130_APOGEE.h5" %>% h5read("fe_h") %>% as_tibble()
+
+not_iron <- oh + ch +mgh + alh + nh + cah
+
+elements <- bind_cols(not_iron, feh) %>% rename(not_iron = value...1, feh = value...2)
+glimpse(elements)
+
+iron_elements_regression <- lm(feh ~ not_iron, data = elements) %>% summary()
+iron_elements_regression
+
+iron_elements_correlation <- cor(elements$feh, elements$not_iron)
+iron_elements_correlation
+
+ggplot(data = elements) + aes(x = feh, y = not_iron) + geom_point() + geom_smooth(method=lm, se=FALSE)
+```
 
 ## Conclusions and Discussions
 The following is the conclusions and reflections of our Capstone Project, and we will divide it for each of the three questions.
