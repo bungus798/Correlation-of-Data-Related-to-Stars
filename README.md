@@ -46,7 +46,9 @@ Again, just before we actually start the process of performing the hypothesis te
 
 Now, we will perform the actual hypothesis testing for simple linear regression. First of all, we can get a sample of 7514 observations of the effective temperature (teff) using the sample_n() function, and then use the lm() summary() function to get the statistical data for the linear regression test. The specific statistical data are shown in the below:
 
-### Picture Placeholder
+<p align="center">
+ <img src="https://github.com/bungus798/Correlation-of-Data-Related-to-Stars/blob/main/main/outputs/residuals1.png" width="600" height="300">
+</p>
 
 As shown in the figure above, we get an acceptable residual error value, and also a low error of this set of residuals, with 279.2 on 7512 degrees of freedom. Moreover, we also see a low standard error for the y-intercept and slope for the automatically-derived equation for line of best fit, which holds that all values are very close to zero. Here, we get a p-value of 0.2829, which is much larger than our set significance level of 0.05. The p-value is the probability that the test statistic is extreme or more extreme than the observed value, assuming that the null hypothesis is true. In this case, the p-value is not considered to be statistically significant, so we are not able to reject the null hypothesis. Therefore, the results we get is that there is no correlation between the wavelength and effective temperature of stars. Moreover, since the residual standard error is relatively low, this result is also highly acceptable.
 
@@ -62,7 +64,7 @@ The third step we have done was to start the simulation. We use set.seed() and p
 The fourth step we have done was to create a visualization and see the distribution of the simulated mean values. But here we changed the “sim_mean_logg” from a vector to a tibble. Otherwise the plot will fail to be created since it is a numeric vector rather than a <data.frame>. So we used the tibble() function and successfully got a data form of the “sim_mean_logg” called “sim_mean_logg_data”. After that we can use “ggplot(data=sim_mean_logg_data, aes(x=sim_mean_logg)) + geom_histogram()” to get a visualization.
 
 <p align="center"> 
- <img src="https://github.com/bungus798/Correlation-of-Data-Related-to-Stars/blob/main/main/visualizations/histo2.png" width="500" height="300"> <img src="https://github.com/bungus798/Correlation-of-Data-Related-to-Stars/blob/main/main/visualizations/boxplot1.png" width="500" height="300"> 
+ <img src="https://github.com/bungus798/Correlation-of-Data-Related-to-Stars/blob/main/main/visualizations/histo2.png" width="500" height="300"> <img src="https://github.com/bungus798/Correlation-of-Data-Related-to-Stars/blob/main/main/visualizations/boxplot1.png" width="600" height="300"> 
 </p>
 
 From the visualization, we discovered that the histogram(below) has a symmetric unimodal distribution range from 2.286 to 2.296.
@@ -165,7 +167,9 @@ The second visualization of the histogram shown above represents the levels of i
 The line of best fit from this graph explains more about the correlation of iron and the other elements. Since the x is the iron produced and y is the other elements produced, the line of best fit would have a slope and since it is positive in the visualization, it can conclude a fact that as iron is being produced, the other elements are not decreasing but rather increasing as well. Furthermore, we can see that this slope is fairly consistent as it increases and is not too vertical. This can tell us that the proportion of iron to other elements are quite similar. From just the visualizations, we are unable to make a confident conclusion with the abundance of iron compared to other elements.
 If we want numbers instead of visualizations, we can use the lm() method to compare the slopes produced by the material and their levels on the stars. This way, the numbers can give us a more accurate representation which can help to make a clearer observation.
 
-### Picture Placeholder
+<p align="center"> 
+ <img src="https://github.com/bungus798/Correlation-of-Data-Related-to-Stars/blob/main/main/outputs/residuals2.png" width="670" height="300">
+</p>
 
 Based on these results from the lm() function, we can see that our estimated linear regression equation gives us an intercept of -0.08 and a slope of 0.17. From our previous visualization of the scatter plot, the line of best fit is now represented by a slope of 0.17 which tells us the relationship between iron and the other elements. As the abundance of iron rises, the other elements rise as well; however, with a slope of 0.17, it means that iron is indeed found more on the stars and as the amount increases, the other elements slowly increase along with the iron.
 Represented below here are some of the codes and functions we have utilized to generate these visualizations for this question.
@@ -208,8 +212,8 @@ From our third question, we can conclude that our answer to our question has bee
 
 ## Individual Contributions
 The following are the individual contributions written by each group member:
-1. Kevin Shao (Student ID: 1008781908): In the Capstone Project, I was responsible for setting the question, designing the entire process of the statistical approach, and writing the conclusions for Question 1. Note that I did not complete the visualizations by myself.
-2. Adriano Rymon-Lipinski (Student ID: 1008717453): In the Capstone Project, I was responsible for the visualizations and other R-code parts for Question 1, 2, and 3, and also gave many inspirations and ideas to Kevin and Angus (main producers for analysis of Question 1 and 2).
-3. Angus Yeung (Student ID: 1008724089): I was responsible for finishing all of question 3 except the visualizations (which was done by Adriano). I was also responsible for researching more about the elements and stars so that I was able to describe question 3 with more precision. Furthermore, using the visualizations that Adriano was able to provide me with along with the guidance of myself, I was able to make conclusions about some small supplementary questions I had dealing with question 3. The data, discussion, and conclusion were also updated throughout the process of doing question 3.
+1. Kevin Shao: In the Capstone Project, I was responsible for setting the question, designing the entire process of the statistical approach, and writing the conclusions for Question 1. Note that I did not complete the visualizations by myself.
+2. Adriano Rymon-Lipinski: In the Capstone Project, I was responsible for the visualizations and other R-code parts for Question 1, 2, and 3, and also gave many inspirations and ideas to Kevin and Angus (main producers for analysis of Question 1 and 2).
+3. Angus Yeung: I was responsible for finishing all of question 3 except the visualizations (which was done by Adriano). I was also responsible for researching more about the elements and stars so that I was able to describe question 3 with more precision. Furthermore, using the visualizations that Adriano was able to provide me with along with the guidance of myself, I was able to make conclusions about some small supplementary questions I had dealing with question 3. The data, discussion, and conclusion were also updated throughout the process of doing question 3.
    
-4. Yutong Han (Student ID: 1009038783): In this final report, I was responsible for making an introduction to the second question. Based on the visualizations and the CI results, I made a conclusion for answering the second research question and I wrote a new discovery from the result that was not considered at the beginning.
+4. Yutong Han: In this final report, I was responsible for making an introduction to the second question. Based on the visualizations and the CI results, I made a conclusion for answering the second research question and I wrote a new discovery from the result that was not considered at the beginning.
