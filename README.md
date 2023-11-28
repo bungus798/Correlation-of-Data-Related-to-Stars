@@ -1,7 +1,7 @@
 # Correlation-of-Data-Related-to-Stars
 Capstone project on the "SDSS APOGEE Stellar Spectra" dataset
 
-## Group Members
+## Contributors
 - Kevin Shao
 - Adriano Rymon-Lipinski
 - Angus Yeung
